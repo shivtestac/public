@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get install -y apache2
 
 # Copy configuration files
-COPY apache2.conf /etc/apache2/
+#COPY apache2.conf /etc/apache2/
 
 CMD echo "hello shiv " > /var/www/html/index.html
 
