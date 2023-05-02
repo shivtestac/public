@@ -9,7 +9,7 @@ pipeline {
         }
         stage('ech') {
             steps {
-                sh 'echo main'
+                sh 'echo prod'
             }
         }
     }
