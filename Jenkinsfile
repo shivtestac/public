@@ -9,7 +9,7 @@ pipeline {
         }
         stage('ech') {
             steps {
-                sh 'main'
+                sh 'echo Dev'
             }
         }
     }
