@@ -24,4 +24,4 @@ jobs:
 
     - name: Copy files to dev server
       run: |
-        scp -o StrictHostKeyChecking=no -r ./ root@125.17.72.92:/home/devel/
+        scp -o StrictHostKeyChecking=no -r * root@125.17.72.92:/home/devel/
