@@ -18,6 +18,10 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.dev }}  # Ensure this matches your secret name
 
+    - name: Add dev server to known_hosts
+      run: |
+        ssh-keyscan -H 125.17.72.92 >> ~/.ssh/known_hosts
+
     - name: Copy files to dev server
       run: |
-        scp StrictHostKeyChecking=no -r ./ root@125.17.72.92:/home/devel/
+        scp -o StrictHostKeyChecking=no -r ./ root@125.17.72.92:/home/devel/
