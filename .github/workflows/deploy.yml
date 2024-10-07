@@ -3,7 +3,7 @@ name: Deploy to Dev Server
 on:
   push:
     branches:
-      - main  # Change this if your main branch is named differently
+      - main  # Ensure this matches your branch name
 
 jobs:
   deploy:
@@ -16,7 +16,7 @@ jobs:
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.dev }}  # Ensure 'dev' is your secret name
+        ssh-private-key: ${{ secrets.dev }}  # Ensure this matches your secret name
 
     - name: Copy files to dev server
       run: |
