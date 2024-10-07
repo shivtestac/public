@@ -1,0 +1,23 @@
+name: Deploy to Dev Server
+
+on:
+  push:
+    branches:
+      - main  # Adjust this if you want to deploy from a different branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.dev }}  # Use the secret named "dev"
+
+    - name: Copy files to dev server
+      run: |
+        scp -r ./ shiv@125.17.72.92:/home/devel/
