@@ -13,12 +13,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Set up Kaniko
-    - name: Set up Kaniko
-      uses: google-github-actions/setup-kaniko@v2
-      with:
-        version: 'latest'  # Specify the Kaniko version you want
-
     # Build Docker image using Kaniko
     - name: Build and push Docker image using Kaniko
       env:
@@ -29,6 +23,10 @@ jobs:
         mkdir -p /kaniko/.docker
         echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_TOKEN\"}}}" > /kaniko/.docker/config.json
         
-        /kaniko/executor --context ${{ github.workspace }} \
-          --dockerfile ${{ github.workspace }}/Dockerfile \
-          --destination shivtestac/kan:tagname
+        # Run the Kaniko executor directly using the Kaniko image
+        docker run --rm -v "${{ github.workspace }}:/workspace" \
+          -v "/kaniko/.docker:/kaniko/.docker" \
+          gcr.io/kaniko-project/executor:latest \
+          --context=/workspace \
+          --dockerfile=/workspace/Dockerfile \
+          --destination=shivtestac/kan:tagname
