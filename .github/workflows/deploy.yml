@@ -13,19 +13,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Set up Docker credentials for Kaniko
+    - name: Prepare Docker credentials for Kaniko
+      run: |
+        mkdir -p $HOME/.docker
+        echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"${{ secrets.uname }}\",\"password\":\"${{ secrets.dtoken }}\"}}}" > $HOME/.docker/config.json
+
     # Build Docker image using Kaniko
     - name: Build and push Docker image using Kaniko
-      env:
-        DOCKER_CONFIG: /kaniko/.docker/  # Kaniko expects Docker credentials here
-        DOCKER_USERNAME: ${{ secrets.uname }}  # Docker Hub username secret
-        DOCKER_TOKEN: ${{ secrets.dtoken }}  # Docker Hub token secret
       run: |
-        mkdir -p /kaniko/.docker
-        echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_TOKEN\"}}}" > /kaniko/.docker/config.json
-        
-        # Run the Kaniko executor directly using the Kaniko image
-        docker run --rm -v "${{ github.workspace }}:/workspace" \
-          -v "/kaniko/.docker:/kaniko/.docker" \
+        docker run --rm \
+          -v "${{ github.workspace }}:/workspace" \
+          -v "$HOME/.docker:/kaniko/.docker" \
           gcr.io/kaniko-project/executor:latest \
           --context=/workspace \
           --dockerfile=/workspace/Dockerfile \
