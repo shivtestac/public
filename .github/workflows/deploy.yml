@@ -16,7 +16,7 @@ jobs:
     - name: Set up SSH
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.dev }}  # Ensure this matches your secret name
+        ssh-private-key: ${{ secrets.aws }}  # Ensure this matches your secret name
 
     - name: Add dev server to known_hosts
       run: |
