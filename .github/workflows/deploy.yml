@@ -1,4 +1,4 @@
-name: Deploy to Dev Server
+name: Build and Push Docker Image
 
 on:
   push:
@@ -6,33 +6,29 @@ on:
       - main  # Ensure this matches your branch name
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
+    # Set up Kaniko
+    - name: Set up Kaniko
+      uses: google-github-actions/setup-kaniko@v2
       with:
-        ssh-private-key: ${{ secrets.aws }}  # Ensure this matches your secret name
+        version: 'latest'  # Specify the Kaniko version you want
 
-    - name: Add dev server to known_hosts
+    # Build Docker image using Kaniko
+    - name: Build and push Docker image using Kaniko
+      env:
+        DOCKER_CONFIG: /kaniko/.docker/  # Kaniko expects Docker credentials here
+        DOCKER_USERNAME: ${{ secrets.uname }}  # Docker Hub username secret
+        DOCKER_TOKEN: ${{ secrets.dtoken }}  # Docker Hub token secret
       run: |
-        ssh-keyscan -H 15.207.193.51 >> ~/.ssh/known_hosts
-
-    # Log in to Docker Hub using the access token
-    - name: Log in to Docker Hub
-      run: echo "${{ secrets.dtoken }}" | docker login -u "${{ secrets.uname }}" --password-stdin
-
-    # Build Docker image from Dockerfile
-    - name: Build Docker image
-      run: |
-        docker build -t shivtestac/kan:alpine:latest .  # Adjust the image name and tag here
-
-    # Push the Docker image to Docker Hub
-    - name: Push Docker image to Docker Hub
-      run: |
-        docker push shivtestac/kan:tagname  # Use your Docker image name and tag
-
+        mkdir -p /kaniko/.docker
+        echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"$DOCKER_USERNAME\",\"password\":\"$DOCKER_TOKEN\"}}}" > /kaniko/.docker/config.json
+        
+        /kaniko/executor --context ${{ github.workspace }} \
+          --dockerfile ${{ github.workspace }}/Dockerfile \
+          --destination shivtestac/kan:tagname
