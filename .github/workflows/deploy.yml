@@ -28,10 +28,10 @@ jobs:
 
 
     # Step to install Docker CLI on the GitHub Actions runner
-    - name: Install Docker
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker.io
+#    - name: Install Docker
+#      run: |
+#        sudo apt-get update
+#        sudo apt-get install -y docker.io
 
     # Build Docker image from Dockerfile
     - name: Build Docker image
