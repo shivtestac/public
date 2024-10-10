@@ -22,6 +22,28 @@ jobs:
       run: |
         ssh-keyscan -H 15.207.193.51 >> ~/.ssh/known_hosts
 
-    - name: Copy files to dev server
+#    - name: Copy files to dev server
+#      run: |
+#        scp -o StrictHostKeyChecking=no -r * ubuntu@15.207.193.51:/home/ubuntu/
+
+
+    # Step to install Docker CLI on the GitHub Actions runner
+    - name: Install Docker
       run: |
-        scp -o StrictHostKeyChecking=no -r * ubuntu@15.207.193.51:/home/ubuntu/
+        sudo apt-get update
+        sudo apt-get install -y docker.io
+
+    # Build Docker image from Dockerfile
+    - name: Build Docker image
+      run: |
+        docker build -t shiv .
+
+    # Copy Docker image to the dev server
+    - name: Save and transfer Docker image to dev server
+      run: |
+        docker save shiv | bzip2 | ssh ubuntu@15.207.193.51 'bunzip2 | docker load'
+
+    # Optional: Run the Docker container on the dev server
+    - name: Run Docker container on dev server
+      run: |
+        ssh ubuntu@15.207.193.51 "docker run -d --name shiv_container shiv"
