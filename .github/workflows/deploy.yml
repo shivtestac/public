@@ -28,4 +28,4 @@ jobs:
           gcr.io/kaniko-project/executor:latest \
           --context=/workspace \
           --dockerfile=/workspace/Dockerfile \
-          --destination=shivtestac/kan:tagname
+          --destination=shivtestac/kan:kanpushshivrepo
