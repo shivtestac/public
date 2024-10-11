@@ -18,6 +18,10 @@ jobs:
       with:
         version: 'latest'  # Use the latest version of kubectl
 
+    - name: Create kube directory
+      run: |
+        mkdir -p $HOME/.kube  # Create the .kube directory
+
     - name: Configure kubectl
       run: |
         echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
