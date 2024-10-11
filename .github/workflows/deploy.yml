@@ -13,19 +13,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Set up Docker credentials for Kaniko
-    - name: Prepare Docker credentials for Kaniko
-      run: |
-        mkdir -p $HOME/.docker
-        echo "{\"auths\":{\"https://index.docker.io/v1/\":{\"username\":\"${{ secrets.uname }}\",\"password\":\"${{ secrets.dtoken }}\"}}}" > $HOME/.docker/config.json
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v1
+      with:
+        version: 'latest'  # Use the latest version of kubectl
 
-    # Build Docker image using Kaniko
-    - name: Build and push Docker image using Kaniko
+    - name: Configure kubectl
       run: |
-        docker run --rm \
-          -v "${{ github.workspace }}:/workspace" \
-          -v "$HOME/.docker:/kaniko/.docker" \
-          gcr.io/kaniko-project/executor:latest \
-          --context=/workspace \
-          --dockerfile=/workspace/Dockerfile \
-          --destination=shivtestac/kan:kanpushshivrepo
+        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
+
+    - name: Run a pod
+      run: |
+        kubectl run my-pod --image=nginx
