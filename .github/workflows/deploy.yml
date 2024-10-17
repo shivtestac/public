@@ -7,7 +7,13 @@ jobs:
   Explore-GitHub-Actions:
     runs-on: arc-runner-set  # This matches your INSTALLATION_NAME
     steps:
-      - run: echo "🎉 This job uses runner scale set runners!"
-      - run: |
+      - name: Display Start Message
+        run: echo "🎉 This job uses runner scale set runners!"
+
+      - name: Sleep for 5 minutes
+        run: |
           echo "⏳ Sleeping for 5 minutes..."
           sleep 300  # Sleep for 300 seconds (5 minutes)
+
+      - name: Display End Message
+        run: echo "✅ Finished sleeping for 5 minutes!"
