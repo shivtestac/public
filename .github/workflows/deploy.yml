@@ -2,6 +2,9 @@ name: Actions Runner Controller Demo
 
 on:
   workflow_dispatch:
+  push:  # Trigger on push events (commits)
+    branches:
+      - main  # Replace with your branch name if different
 
 jobs:
   Explore-GitHub-Actions:
