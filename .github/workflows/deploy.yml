@@ -1,22 +1,19 @@
-name: Actions Runner Controller Demo
+name: Create Pod Example
 
 on:
   workflow_dispatch:
-  push:  # Trigger on push events (commits)
-    branches:
-      - main  # Replace with your branch name if different
 
 jobs:
-  Explore-GitHub-Actions:
-    runs-on: arc-runner-set  # This matches your INSTALLATION_NAME
+  create-pod:
+    runs-on: self-hosted
     steps:
-      - name: Display Start Message
-        run: echo "🎉 This job uses runner scale set runners!"
-
-      - name: Sleep for 5 minutes
+      - name: Set up Kubernetes CLI
         run: |
-          echo "⏳ Sleeping for 5 minutes..."
-          sleep 300  # Sleep for 300 seconds (5 minutes)
+          curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
 
-      - name: Display End Message
-        run: echo "✅ Finished sleeping for 5 minutes!"
+      - name: Create NGINX Pod
+        run: |
+          kubectl run nginx --image=nginx --restart=Never --port=80
+          echo "✅ NGINX Pod created successfully!"
