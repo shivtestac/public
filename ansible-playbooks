@@ -1,0 +1,17 @@
+---
+- name: Install Apache2 on the EC2 instance
+  hosts: all
+  become: true
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: present
+    - name: Ensure Apache2 is running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
